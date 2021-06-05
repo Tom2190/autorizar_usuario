@@ -21,20 +21,14 @@ const pass = process.env.PASS
 
 async function main() {
 
-  const baseDeDatos = crearDaoUsuarios()
+  const dao = crearDaoUsuarios()
   const usuario = crearUsuario(datosUsuario)
-  await baseDeDatos.add(usuario)
-  console.log('Usuario no autorizado a publicar textos:')
-  console.log(await baseDeDatos.getAll())
+  await dao.add(usuario)
  
   const enviador = await crearEnviadorEmails(service,user,pass)
-  const autorizador = await crearAutorizador(enviador)
-  await autorizador.autorizarUsuario(usuario)
-  await baseDeDatos.update(usuario)
-
-  console.log('Usuario autorizado a publicar textos:')
-  console.log(await baseDeDatos.getAll())
-
+  const autorizador = await crearAutorizador(dao,enviador)
+  await autorizador.autorizarUsuario(usuario.id)
+  console.log(await dao.getAll())
 }
 
 main()
